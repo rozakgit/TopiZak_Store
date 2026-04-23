@@ -1,16 +1,17 @@
-# topizak_store
+# 🧢 TopiZak Store
 
-A new Flutter project.
+Aplikasi e-commerce berbasis Flutter untuk penjualan topi.
 
-## Getting Started
+## 🚀 Fitur
+- Login & Register (Firebase Auth)
+- Keranjang belanja
+- Checkout ke Firestore
+- Halaman sukses checkout
+- Riwayat pesanan
 
-This project is a starting point for a Flutter application.
+## 🛠️ Teknologi
+- Flutter
+- Firebase Auth
+- Cloud Firestore
+- Provider (State Management)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
