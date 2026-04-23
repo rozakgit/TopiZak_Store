@@ -27,6 +27,15 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
+    // 🔥 VALIDASI EMAIL
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+        .hasMatch(emailController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Format email tidak valid")),
+      );
+      return;
+    }
+
     setState(() => isLoading = true);
 
     try {
@@ -41,34 +50,72 @@ class _RegisterPageState extends State<RegisterPage> {
 
       await user.updateDisplayName(nameController.text);
 
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .set({
-        'name': nameController.text,
-        'email': emailController.text,
-        'phone': phoneController.text,
-        'created_at': DateTime.now(),
-      });
+      // 🔥 EMAIL VERIFICATION
+      await user.sendEmailVerification();
+      print("Email verifikasi dikirim ke: ${user.email}");
 
-      // 🔥 logout biar balik ke login
+      // 🔥 FIRESTORE (AMAN)
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set({
+          'name': nameController.text,
+          'email': emailController.text,
+          'phone': phoneController.text,
+          'created_at': DateTime.now(),
+        });
+      } catch (e) {
+        print("Firestore error: $e");
+      }
+
       await FirebaseAuth.instance.signOut();
 
       if (!mounted) return;
       setState(() => isLoading = false);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Akun berhasil dibuat, silakan login")),
+        SnackBar(
+          content: Text(
+              "Akun berhasil dibuat, cek email untuk verifikasi (cek spam juga)"),
+        ),
       );
 
       Navigator.pop(context);
 
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      String message = "Register gagal";
+
+      switch (e.code) {
+        case 'email-already-in-use':
+          message = "Email sudah digunakan";
+          break;
+        case 'weak-password':
+          message = "Password minimal 6 karakter";
+          break;
+        case 'invalid-email':
+          message = "Format email tidak valid";
+          break;
+        case 'network-request-failed':
+          message = "Tidak ada koneksi internet";
+          break;
+      }
+
       if (!mounted) return;
       setState(() => isLoading = false);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
+        SnackBar(content: Text(message)),
+      );
+
+    } catch (e) {
+      print("REGISTER ERROR: $e");
+
+      if (!mounted) return;
+      setState(() => isLoading = false);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Terjadi kesalahan")),
       );
     }
   }
