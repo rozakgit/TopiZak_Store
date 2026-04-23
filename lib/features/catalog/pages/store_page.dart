@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
-import '../pages/detail_page.dart';
+import 'detail_page.dart';
 import '../widgets/product_card.dart'; // 🔥 pakai card yang sama
-import '../pages/chat_page.dart';
+import '../../profile/pages/chat_page.dart';
 
 class StorePage extends StatefulWidget {
   final String storeName;

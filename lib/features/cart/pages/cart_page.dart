@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models/cart_model.dart';
+import '../../cart/models/cart_model.dart';
 import 'success_page.dart';
 
 class CartPage extends StatelessWidget {

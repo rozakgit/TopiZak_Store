@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/product.dart';
-import '../models/favorite_model.dart';
+import '../providers/favorite_model.dart';
 import '../pages/detail_page.dart';
 
 class ProductCard extends StatelessWidget {
