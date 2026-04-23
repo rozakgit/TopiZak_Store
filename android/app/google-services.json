@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "415237501315",
+    "project_id": "tokotopi-9d2dc",
+    "storage_bucket": "tokotopi-9d2dc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:415237501315:android:096eb2abd8a93db106c6b6",
+        "android_client_info": {
+          "package_name": "com.zak.topi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "415237501315-aq95it8fbmm4l7qp0u3b7t4aida13d77.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbJTQ0YFTR6b8kvICHQjl675mNI5mY1ls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "415237501315-aq95it8fbmm4l7qp0u3b7t4aida13d77.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,4 @@
-package com.example.topizak_store
+package com.zak.topi
 
 import io.flutter.embedding.android.FlutterActivity
 
