@@ -33,9 +33,8 @@ class CartPage extends StatelessWidget {
     );
 
     try {
-      if (await canLaunchUrl(paymentUri)) {
-        await launchUrl(paymentUri, mode: LaunchMode.externalApplication);
-      } else {
+      final launched = await launchUrl(paymentUri, mode: LaunchMode.externalApplication);
+      if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Aplikasi Bankling tidak ditemukan, silakan install terlebih dahulu")),
         );
