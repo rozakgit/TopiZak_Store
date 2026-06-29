@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../cart/models/cart_model.dart';
 import 'success_page.dart';
 
@@ -26,33 +26,23 @@ class CartPage extends StatelessWidget {
       return;
     }
 
+    // Ubah logika checkout ke deeplink Bankling
+    final total = cart.totalPrice;
+    final Uri paymentUri = Uri.parse(
+        'bankling://pay?merchant_id=topizak_store&merchant_name=TopiZak_Store&amount=$total&callback=topizak://callback'
+    );
+
     try {
-      await FirebaseFirestore.instance.collection('orders').add({
-        'user_id': user.uid,
-        'total': cart.totalPrice,
-        'items': cart.items.map((item) {
-          return {
-            'name': item.product.name,
-            'price': item.product.price,
-            'qty': item.quantity,
-            'image': item.product.image[0],
-          };
-        }).toList(),
-        'created_at': FieldValue.serverTimestamp(),
-      });
-
-      cart.clearCart();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const SuccessPage(),
-        ),
-      );
-
+      if (await canLaunchUrl(paymentUri)) {
+        await launchUrl(paymentUri, mode: LaunchMode.externalApplication);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Aplikasi Bankling tidak ditemukan, silakan install terlebih dahulu")),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
+        SnackBar(content: Text("Gagal membuka Bankling: $e")),
       );
     }
   }
