@@ -15,6 +15,12 @@ import 'features/auth/pages/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// 🔥 DEEPLINK & HTTP
+import 'dart:async';
+import 'package:app_links/app_links.dart';
+import 'package:dio/dio.dart';
+import 'features/cart/pages/success_page.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -38,14 +44,62 @@ class MyAppWrapper extends StatelessWidget {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  Future<void> _initDeepLinks() async {
+    _appLinks = AppLinks();
+
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) async {
+      debugPrint('Menerima deeplink: $uri');
+      if (uri.scheme == 'topizak' && uri.host == 'callback') {
+        final status = uri.queryParameters['status'];
+        
+        if (status == 'success') {
+          // TODO: Call be-topi_store API via Dio to confirm order here if needed.
+          // For now, we clear the cart and navigate to success page.
+          final cart = Provider.of<CartModel>(context, listen: false);
+          cart.clearCart();
+          
+          _navigatorKey.currentState?.pushReplacement(
+            MaterialPageRoute(builder: (_) => const SuccessPage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Pembayaran gagal atau dibatalkan')),
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
+          navigatorKey: _navigatorKey,
           debugShowCheckedModeBanner: false,
 
           themeMode: themeProvider.themeMode,
